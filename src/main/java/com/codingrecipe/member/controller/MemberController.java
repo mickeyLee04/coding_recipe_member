@@ -63,4 +63,33 @@ public class MemberController {
         model.addAttribute("member", memberDTO);
         return "detail";
     }
+
+    @GetMapping("/delete")
+    public String delete(@RequestParam("id") Long id) {
+        memberService.delete(id);
+
+        return "redirect:/member/";
+    }
+
+    @GetMapping("/update")
+    public String updateForm(HttpSession session, Model model) {
+        String loginEmail = (String) session.getAttribute("loginEmail");
+        MemberDTO memberDTO = memberService.findByEmail(loginEmail);
+        model.addAttribute("member", memberDTO);
+        return "update";
+    }
+
+    @PostMapping("/update")
+    public String update(@ModelAttribute MemberDTO memberDTO) {
+        boolean result = memberService.update(memberDTO);
+        if (result) {
+            return "redirect:/member?id="+memberDTO.getId();
+        } else {
+            return "update";
+        }
+    }
+
+
+
+
 }
